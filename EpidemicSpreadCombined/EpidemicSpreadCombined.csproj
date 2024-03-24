@@ -3,8 +3,22 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
+    <ItemGroup>
+        <Content Include="config.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="Resources\*.*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Mars.Life.Simulations" Version="4.5.2" />
+        <PackageReference Include="MathNet.Numerics" Version="6.0.0-beta1" />
+        <PackageReference Include="NumSharp" Version="0.30.0" />
+        <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />
+        <PackageReference Include="TensorFlow.Keras" Version="0.15.0" />
+        <PackageReference Include="TensorFlow.NET" Version="0.150.0" />
+    </ItemGroup>
 
 </Project>
