@@ -38,6 +38,7 @@ namespace EpidemicSpreadCombined.Model
             _infectionLayer = layer;
             _infectionLayer.ContactEnvironment.Insert(this);
             _susceptibility = Params.Susceptibility[MyAgeGroup];
+            _infinityTime = Params.Steps + 1;
             InitStage();
             InitMeanInteractions();
             InitInfectedTime();

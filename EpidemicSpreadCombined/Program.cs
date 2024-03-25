@@ -15,7 +15,7 @@ namespace EpidemicSpreadCombined
         private static void Main()
         {
             // var calibNn = new SimpleCalibNn();
-            // calibNn.Train(5);
+            // calibNn.Train(1);
 
             EpidemicSpreadSimulation();
         }

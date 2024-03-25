@@ -26,7 +26,7 @@ namespace EpidemicSpreadCombined
         public SimpleCalibNn()
         {
             _projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-            _modelPath = Path.Combine(_projectDirectory, "simple_calibnn");
+            _modelPath = Path.Combine(_projectDirectory, "Resources/simple_calibnn");
             LoadData();
             InitModel();
             
