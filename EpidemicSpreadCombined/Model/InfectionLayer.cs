@@ -82,6 +82,13 @@ namespace EpidemicSpreadCombined.Model
             ArrayStages = tf.cast(Stages, TF_DataType.TF_INT32).numpy().ToArray<int>();
         }
 
+        /// <summary>
+        /// Updates the transition times of all agents by checking the stage, if it was exposed and the current transition
+        /// time of the agent. The new transition time is calculated based on the stage the agent is in after its stage is
+        /// updated
+        /// </summary>
+        /// <param name="exposedToday"></param>
+        /// <returns></returns>
         private Tensor UpdateNextStageTimes(Tensor exposedToday)
         {
             var newTransitionTimes = tf.identity(_nextStageTimes);
@@ -90,18 +97,24 @@ namespace EpidemicSpreadCombined.Model
                     tf.constant((int)Stage.Infected)), tf.equal(_nextStageTimes, 
                 tf.constant((int)Context.CurrentTick)));
             
+            // Transition time of dead and recovered agents is set to infinity 
             newTransitionTimes = tf.where(conditionInfectedAndTransitionTime, 
                 tf.fill(tf.shape(newTransitionTimes), tf.constant(_infinityTime)), newTransitionTimes);
             
+            // Condition indicating that an agent is exposed and it's time for a transition
             var conditionExposedAndTransitionTime = tf.logical_and(tf.equal(currentStages, 
                     tf.constant((int)Stage.Exposed)), tf.equal(_nextStageTimes, 
                 tf.constant((int)Context.CurrentTick)));
             
+            // Transition time of agents where the condition conditionExposedAndTransitionTime is true
+            // is set to the time of transition to recovered
             newTransitionTimes = tf.where(conditionExposedAndTransitionTime,
                 (tf.fill(tf.shape(newTransitionTimes),tf.constant((int)Context.CurrentTick) + 
                                                       Params.InfectedToRecoveredTime)), newTransitionTimes);
-            // tf.print(tf.shape(_nextStageTimes));
-            var result = exposedToday * (tf.constant((int)Context.CurrentTick + 1) + Params.ExposedToInfectedTime)
+            
+            // Agents that got exposed in the current tick have their transition time set to ExposedToInfectedTime + 1
+            // and the transition time of the rest is newTransitionTimes
+            var result = exposedToday * (tf.constant((int)Context.CurrentTick) + Params.ExposedToInfectedTime + 1)
                 + (tf.fill(tf.shape(exposedToday), tf.constant(1)) - exposedToday) * newTransitionTimes;
             return result;
         }

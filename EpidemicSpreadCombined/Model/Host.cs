@@ -32,6 +32,8 @@ namespace EpidemicSpreadCombined.Model
         private int _infinityTime;
 
         private float _susceptibility;
+        
+        private bool _exposedToday;
 
         public void Init(InfectionLayer layer)
         {
@@ -46,6 +48,7 @@ namespace EpidemicSpreadCombined.Model
 
         public void Tick()
         {
+            _exposedToday = false;
             // infected time initialization missing
             Interact();
             Progress();
@@ -69,6 +72,7 @@ namespace EpidemicSpreadCombined.Model
                         Random random = new Random();
                         if (!(random.NextDouble() < result)) continue;
                         _infectionLayer.ArrayExposedToday[Index] = 1;
+                        _exposedToday = true;
                         return;
                     }
                 }
@@ -82,8 +86,15 @@ namespace EpidemicSpreadCombined.Model
 
         private void Progress()
         {
-            MyStage = _infectionLayer.ArrayStages[Index];
-            if (MyStage == (int)Stage.Exposed) _infectedTime = (int)_infectionLayer.GetCurrentTick();
+            if (_exposedToday)
+            {
+                MyStage = (int)Stage.Exposed;
+                _infectedTime = (int) _infectionLayer.GetCurrentTick();
+            }
+            else
+            {
+                MyStage = _infectionLayer.ArrayStages[Index];
+            }
             // if (MyStage == (int)Stage.Recovered) Console.WriteLine("I'm recovered!!!");
         }
         
@@ -114,7 +125,7 @@ namespace EpidemicSpreadCombined.Model
                     _infectedTime = 0;
                     break;
                 case (int)Stage.Infected:
-                    _infectedTime = 1 - Params.ExposedToInfectedTime.numpy();
+                    _infectedTime = 1 - (int)Params.ExposedToInfectedTime.numpy();
                     break;
                 case (int)Stage.Recovered:
                     _infectedTime = _infinityTime;
