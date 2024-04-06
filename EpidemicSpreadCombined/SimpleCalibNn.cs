@@ -57,7 +57,7 @@ namespace EpidemicSpreadCombined
             {
                 using (var tape = tf.GradientTape())
                 {
-                    var predictions = (Tensor)_model.predict(_features);
+                    var predictions = (Tensor)_model.predict(np.array(10f).reshape(new Shape(-1, 1)));
                     (var loss, var boundedPredictions) = CustomLoss(_labels, predictions);
                     
                     if (loss.numpy() < bestEpochloss)
@@ -125,11 +125,8 @@ namespace EpidemicSpreadCombined
         {
             var filePath = "Resources/training.csv";
             var lines = File.ReadAllLines(filePath).Skip(1).ToArray();
-            var featureData = lines.Select(line => float.Parse(line.Split(',')[0])).ToArray();
-            var labelData = lines.Select(line => float.Parse(line.Split(',')[1])).ToArray();
-
-            _features = np.array(featureData).reshape(new Shape(-1, 1)); // Stellen Sie sicher, dass die Dimensionen stimmen
-            _labels = np.array(labelData).reshape(new Shape(-1, 1)); // Stellen Sie sicher, dass die Dimensionen stimmen
+            var labelData = lines.Select(line => float.Parse(line)).ToArray();
+            _labels = np.array(labelData).reshape(new Shape(-1, 1)); 
             
         }
         

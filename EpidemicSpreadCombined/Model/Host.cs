@@ -54,7 +54,10 @@ namespace EpidemicSpreadCombined.Model
             Progress();
             if (MyStage == (int)Stage.Mortality) Die();
         }
-
+        
+        /// <summary>
+        /// Calculate the probability of infection from every interaction with an infected or exposed host
+        /// </summary>
         private void Interact()
         {
             if(MyStage == (int) Stage.Susceptible){
@@ -79,11 +82,17 @@ namespace EpidemicSpreadCombined.Model
             }
         }
 
+        /// <summary>
+        /// The agent dies if it reaches the mortality stage
+        /// </summary>
         private void Die()
         {
            // UnregisterHandle.Invoke(_infectionLayer, this);
         }
-
+        
+        /// <summary>
+        /// Progresses the stage of the agent
+        /// </summary>
         private void Progress()
         {
             if (_exposedToday)
@@ -98,6 +107,9 @@ namespace EpidemicSpreadCombined.Model
             // if (MyStage == (int)Stage.Recovered) Console.WriteLine("I'm recovered!!!");
         }
         
+        /// <summary>
+        /// Calculates the mean number of interactions based on the age group of the agent
+        /// </summary>
         private void InitMeanInteractions()
         {
             var childAgent = MyAgeGroup <= Params.ChildUpperIndex;
@@ -109,11 +121,17 @@ namespace EpidemicSpreadCombined.Model
             else if (elderAgent) _meanInteractions = Params.Mu[2];
         }
         
+        /// <summary>
+        /// Initializes the stage of the agent by setting it to the stage value of the infection layer
+        /// </summary>
         private void InitStage()
         {
             MyStage = _infectionLayer.ArrayStages[Index];
         }
 
+        /// <summary>
+        /// Initializes the time the agent has been infected based on the stage it is in
+        /// </summary>
         private void InitInfectedTime()
         {
             switch (MyStage)
@@ -136,7 +154,10 @@ namespace EpidemicSpreadCombined.Model
             }
         }
         
-        public static void SetLamdaGammaIntegrals()
+        /// <summary>
+        /// Initializes the integrals for the gamma distribution needed for the infection probability calculation
+        /// </summary>
+        public static void InitLamdaGammaIntegrals()
         {
             var scale = 5.15;
             var rate = 2.14;

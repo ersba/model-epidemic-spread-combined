@@ -42,7 +42,7 @@ namespace EpidemicSpreadCombined.Model
             InitStages();
             InitNextStageTimes();
             ArrayExposedToday = new int[Params.AgentCount];
-            Host.SetLamdaGammaIntegrals();
+            Host.InitLamdaGammaIntegrals();
             AgentManager = layerInitData.Container.Resolve<IAgentManager>();
             AgentManager.Spawn<Host, InfectionLayer>().ToList();
             ContactEnvironment.ReadCSV();
