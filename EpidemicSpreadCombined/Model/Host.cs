@@ -35,6 +35,10 @@ namespace EpidemicSpreadCombined.Model
         
         private bool _exposedToday;
 
+        /// <summary>
+        /// Initialization of the agent
+        /// </summary>
+        /// <param name="layer"></param>
         public void Init(InfectionLayer layer)
         {
             _infectionLayer = layer;
@@ -46,6 +50,9 @@ namespace EpidemicSpreadCombined.Model
             InitInfectedTime();
         }
 
+        /// <summary>
+        /// Is executed every tick
+        /// </summary>
         public void Tick()
         {
             _exposedToday = false;
@@ -56,7 +63,7 @@ namespace EpidemicSpreadCombined.Model
         }
         
         /// <summary>
-        /// Calculate the probability of infection from every interaction with an infected or exposed host
+        /// Calculates the probability of infection from every interaction with an infected or exposed host
         /// </summary>
         private void Interact()
         {
@@ -83,7 +90,7 @@ namespace EpidemicSpreadCombined.Model
         }
 
         /// <summary>
-        /// The agent dies if it reaches the mortality stage
+        /// This method is executed when the agent dies upon reaching the mortality stage
         /// </summary>
         private void Die()
         {

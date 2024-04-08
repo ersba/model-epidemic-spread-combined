@@ -11,6 +11,9 @@ using static Tensorflow.KerasApi;
 
 namespace EpidemicSpreadCombined
 {
+    /// <summary>
+    /// The SimpleCalibNn class is used for training a simple calibration neural network model.
+    /// </summary>
     public class SimpleCalibNn
     {
         private Sequential _model;
@@ -22,7 +25,7 @@ namespace EpidemicSpreadCombined
         private string _modelPath;
         
         private string _projectDirectory;
-
+        
         public SimpleCalibNn()
         {
             _projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
@@ -32,13 +35,18 @@ namespace EpidemicSpreadCombined
             
         }
         
-        //training using keras optimization
-        public void AlternativeTrain(int epochs = 10)
-        {
-            _model.fit(_features, _labels, batch_size: 1, epochs: epochs, verbose: 1);
-            _model.save(_modelPath, save_format:"tf");
-        }
+        // //training using keras optimization
+        // public void AlternativeTrain(int epochs = 10)
+        // {
+        //     _model.fit(_features, _labels, batch_size: 1, epochs: epochs, verbose: 1);
+        //     _model.save(_modelPath, save_format:"tf");
+        // }
 
+        /// <summary>
+        /// Trains the model for a specified number of epochs using the Adam optimizer. The parameters InitialInfectionRate
+        /// and MortalityRate resulting in the smallest loss are saved in the OptimizedParametersPath file.
+        /// </summary>
+        /// <param name="epochs"></param>
         public void Train(int epochs = 10)
         {
             var bestLoss = float.MaxValue;
@@ -85,6 +93,12 @@ namespace EpidemicSpreadCombined
             _model.save(_modelPath, save_format:"tf");
         }
 
+        /// <summary>
+        /// Custom loss function that integrates the ABM in the optimization process.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="predictions"></param>
+        /// <returns></returns>
         private (Tensor, NDArray) CustomLoss(Tensor target, Tensor predictions)
         {
             var lowerBounds = tf.constant(new [] {0.001f, 0.01f});
@@ -108,19 +122,23 @@ namespace EpidemicSpreadCombined
             return (loss, boundedPred.numpy());
         }
 
-        //
-        private Tensor LossThroughGumbel(Tensor target, Tensor prediction)
-        {
-            tf.print(prediction);
-            var ones = tf.ones(new Shape(1000, 1));
-            Tensor predColumn = ones * prediction;
-            Tensor oneMinusPredColumn = ones * (1 - prediction);
-            Tensor pTiled = tf.concat(new [] {predColumn, oneMinusPredColumn}, axis: 1);
-            tf.print(tf.shape(pTiled));
-            var infected = tf.reduce_sum(tf.cast(GumbelSoftmax.Execute(pTiled)[Slice.All, 0], dtype: TF_DataType.TF_FLOAT));
-            tf.print(infected);
-            return tf.reduce_mean(tf.square(target - infected));
-        }
+        // // Only for testing. Tests whether the GumbelSoftmax layer is differentiable
+        // private Tensor LossThroughGumbel(Tensor target, Tensor prediction)
+        // {
+        //     tf.print(prediction);
+        //     var ones = tf.ones(new Shape(1000, 1));
+        //     Tensor predColumn = ones * prediction;
+        //     Tensor oneMinusPredColumn = ones * (1 - prediction);
+        //     Tensor pTiled = tf.concat(new [] {predColumn, oneMinusPredColumn}, axis: 1);
+        //     tf.print(tf.shape(pTiled));
+        //     var infected = tf.reduce_sum(tf.cast(GumbelSoftmax.Execute(pTiled)[Slice.All, 0], dtype: TF_DataType.TF_FLOAT));
+        //     tf.print(infected);
+        //     return tf.reduce_mean(tf.square(target - infected));
+        // }
+        
+        /// <summary>
+        /// Loads the label data from the training.csv file needed for the optimization
+        /// </summary>
         private void LoadData()
         {
             var filePath = "Resources/training.csv";
@@ -130,6 +148,12 @@ namespace EpidemicSpreadCombined
             
         }
         
+        /// <summary>
+        /// Initializes a feedforward neural network model.
+        /// Checks if a model already exists in the specified directory,
+        /// and loads it if present. Otherwise, creates a new model with
+        /// a specified architecture.
+        /// </summary>
         private void InitModel()
         {
             if (Directory.Exists(_modelPath))
@@ -151,29 +175,29 @@ namespace EpidemicSpreadCombined
         }
     }
     
-    // Custom loss function used to integrate the abm in the optimization process of keras.
-    // Only needed when training is done with AlternativeTrain
-    class CustomLoss : ILossFunc
-    {
-        public Tensor Call(Tensor yTrue, Tensor yPred, Tensor sampleWeight = null)
-        {
-            var lowerBounds = tf.constant(new float[] {1.0f, 0.001f, 0.01f, 2.0f, 4.0f});
-            var upperBounds = tf.constant(new float[] {9.0f, 0.9f, 0.9f, 6.0f, 7.0f});
-            var boundedPred = lowerBounds + (upperBounds - lowerBounds) * yPred;
-            
-            LearnableParams learnableParams = LearnableParams.Instance;
-            
-            Console.Write("Params:");
-            tf.print(boundedPred);
-            learnableParams.MortalityRate = boundedPred[0, 2];
-            var predictedDeaths = Program.EpidemicSpreadSimulation();
-            Console.Write("Deaths: ");
-            tf.print(predictedDeaths);
-            var loss = tf.reduce_mean(tf.square(yTrue - predictedDeaths));
-            
-            return loss;
-        }
-        public string Reduction { get; }
-        public string Name { get; }
-    }
+    // // Custom loss function used to integrate the abm in the optimization process of keras.
+    // // Only needed when training is done with AlternativeTrain
+    // class CustomLoss : ILossFunc
+    // {
+    //     public Tensor Call(Tensor yTrue, Tensor yPred, Tensor sampleWeight = null)
+    //     {
+    //         var lowerBounds = tf.constant(new float[] {1.0f, 0.001f, 0.01f, 2.0f, 4.0f});
+    //         var upperBounds = tf.constant(new float[] {9.0f, 0.9f, 0.9f, 6.0f, 7.0f});
+    //         var boundedPred = lowerBounds + (upperBounds - lowerBounds) * yPred;
+    //         
+    //         LearnableParams learnableParams = LearnableParams.Instance;
+    //         
+    //         Console.Write("Params:");
+    //         tf.print(boundedPred);
+    //         learnableParams.MortalityRate = boundedPred[0, 2];
+    //         var predictedDeaths = Program.EpidemicSpreadSimulation();
+    //         Console.Write("Deaths: ");
+    //         tf.print(predictedDeaths);
+    //         var loss = tf.reduce_mean(tf.square(yTrue - predictedDeaths));
+    //         
+    //         return loss;
+    //     }
+    //     public string Reduction { get; }
+    //     public string Name { get; }
+    // }
 }

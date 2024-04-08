@@ -7,6 +7,11 @@ using static Tensorflow.Binding;
 
 namespace EpidemicSpreadCombined.Model
 {
+    /// <summary>
+    /// The TestLayer class is a simplified layer used primarily for testing purposes. It is designed to evaluate the
+    /// differentiability and functionality of updates. It contains a Tick method, which is called at each step of the
+    /// simulation.
+    /// </summary>
     public class TestLayer : AbstractLayer, ISteppedActiveLayer
     {
         public IAgentManager AgentManager { get; private set; }

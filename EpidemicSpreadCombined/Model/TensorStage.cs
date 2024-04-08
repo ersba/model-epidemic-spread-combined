@@ -3,6 +3,10 @@ using static Tensorflow.Binding;
 
 namespace EpidemicSpreadCombined.Model
 {
+    /// <summary>
+    /// The TensorStage static class provides constant Tensor values representing different stages of an epidemic.
+    /// These stages include Susceptible, Exposed, Infected, Recovered, and Mortality. 
+    /// </summary>
     public static class TensorStage
     {
         public static Tensor Susceptible = tf.constant(0);

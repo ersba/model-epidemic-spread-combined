@@ -12,13 +12,24 @@ namespace EpidemicSpreadCombined
     internal static class Program
     
     {
+        /// <summary>
+        /// To train the model the SimpleCalibNn class is used.
+        /// Otherwise, the EpidemicSpreadSimulation method is called.
+        /// </summary>
         private static void Main()
         {
-            var calibNn = new SimpleCalibNn();
-            calibNn.Train(10);
+            // var calibNn = new SimpleCalibNn();
+            // calibNn.Train(10);
 
-            // EpidemicSpreadSimulation();
+            EpidemicSpreadSimulation();
         }
+        
+        /// <summary>
+        /// Simulates the spread of an epidemic.
+        /// If not in training mode and optimized parameters exist, it uses these parameters for the simulation.
+        /// Otherwise, it uses the parameters from the SimpleCalibNn class or the default values in the learnableParams
+        /// class.
+        /// </summary>
         public static Tensor EpidemicSpreadSimulation(bool train = false)
         {
             if (train == false && File.Exists(Params.OptimizedParametersPath))

@@ -31,7 +31,13 @@ namespace EpidemicSpreadCombined.Model
         private Tensor _nextStageTimes;
         
 
-
+        /// <summary>
+        /// Initialization of the layer. Sets up everything needed for the simulation
+        /// </summary>
+        /// <param name="layerInitData"></param>
+        /// <param name="registerAgentHandle"></param>
+        /// <param name="unregisterAgentHandle"></param>
+        /// <returns></returns>
         public override bool InitLayer(LayerInitData layerInitData, RegisterAgent registerAgentHandle,
             UnregisterAgent unregisterAgentHandle)
         {
@@ -61,6 +67,11 @@ namespace EpidemicSpreadCombined.Model
             
         }
 
+        /// <summary>
+        /// To prevent race conditions, the PostTick method is used to update the stages of all agents after all
+        /// agents have acted. The method calculates the target variable (number of dead agents) and
+        /// updates the transition times
+        /// </summary>
         public void PostTick()
         {
             var recoveredAndDead= Stages * tf.equal(tf.cast(Stages, TF_DataType.TF_INT32), 
@@ -119,6 +130,12 @@ namespace EpidemicSpreadCombined.Model
             return result;
         }
 
+        /// <summary>
+        /// Updates the stages of all agents by checking the current stage, the next stage time and which agents got
+        /// exposed in the current tick.
+        /// </summary>
+        /// <param name="exposedToday"></param>
+        /// <returns></returns>
         private Tensor UpdateStages(Tensor exposedToday)
         {
             var currentStages = tf.cast(Stages, TF_DataType.TF_INT32);
@@ -159,6 +176,9 @@ namespace EpidemicSpreadCombined.Model
             return nextStages;
         }
         
+        /// <summary>
+        /// Initializes the Stages Tensor using the gumbel softmax distribution with the initial infection rate
+        /// </summary>
         private void InitStages()
         {
             var ones = tf.ones(new Shape(Params.AgentCount, 1));
@@ -170,6 +190,10 @@ namespace EpidemicSpreadCombined.Model
             ArrayStages = tf.cast(Stages, TF_DataType.TF_INT32).numpy().ToArray<int>();
         }
 
+        /// <summary>
+        /// Initializes the transition times of the agents based on the stage they are in and the transition time
+        /// parameters of the model
+        /// </summary>
         private void InitNextStageTimes()
         {
             var currentStages = tf.cast(Stages, TF_DataType.TF_INT32);
