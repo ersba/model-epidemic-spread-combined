@@ -11,10 +11,7 @@ namespace EpidemicSpreadCombined
 
         private LearnableParams()
         {
-            // InitialInfectionRate = tf.constant(0.05, dtype: TF_DataType.TF_FLOAT);
-            // InitialInfectionRate = tf.constant(0.5, dtype: TF_DataType.TF_FLOAT);
             InitialInfectionRate = tf.constant(0.05, dtype: TF_DataType.TF_FLOAT);
-            // InitialInfectionRate = tf.constant(0.99, dtype: TF_DataType.TF_FLOAT);
             MortalityRate = tf.constant(0.1, dtype: TF_DataType.TF_FLOAT);
         }
         

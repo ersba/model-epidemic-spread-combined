@@ -3,8 +3,18 @@ using static Tensorflow.Binding;
 
 namespace EpidemicSpreadCombined
 {
+    /// <summary>
+    /// Implementation of the Gumbel-Softmax function.
+    /// </summary>
     public static class GumbelSoftmax
     {
+        /// <summary>
+        /// This method is used to perform the Gumbel-Softmax trick, which is a method for sampling from a discrete
+        /// probability distribution that also provides differentiable samples.
+        /// </summary>
+        /// <param name="probabilities"></param>
+        /// <param name="temperature"></param>
+        /// <returns></returns>
         public static Tensor Execute(Tensor probabilities, double temperature = 1.0)
         {
             var gumbelNoise = -tf.math.log(-tf.math.log(tf.random.uniform(probabilities.shape)));
