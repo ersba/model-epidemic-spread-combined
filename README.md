@@ -27,15 +27,53 @@ In this model, tensors are used to store and process data including the stages o
   - They support a wide range of mathematical operations, enabling them to solve complex mathematical functions
 
 To get an understanding of how tensors are used in [TensorFlow.NET](https://github.com/SciSharp/TensorFlow.NET) here is an example 
-of a calculation, first with arrays and then with tensors: 
+of an elementwise calculation, first with arrays and then with tensors: 
 
 ```csharp
+float[,] arrayA = { { 1, 2 }, { 3, 4 } };
+float[,] arrayB = { { 5, 6 }, { 7, 8 } };
 
+float[,] arraySum = new float[2, 2];
+for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 2; j++)
+            {
+                arraySum[i, j] = arrayA[i, j] + arrayB[i, j];
+            }
+    }
+
+var tensorA = new Tensor(arrayA);
+var tensorB = new Tensor(arrayB);
+
+var tensorSum = tf.add(tensorA, tensorB);
 ```
+arraySum and tensorSum contain the same values and are two-dimensional with a shape of 2 x 2:
 
-```csharp
 
-```
+$$
+\begin{bmatrix}
+1 & 2 \\
+3 & 4
+\end{bmatrix}
++
+\begin{bmatrix}
+5 & 6 \\
+7 & 8
+\end{bmatrix}
+=
+\begin{bmatrix}
+6 & 8 \\
+10 & 12
+\end{bmatrix}
+$$
+
+
+This example shows how tensors can efficiently perform mathematical operations without the need for loops. The stage of every
+agent is stored in a n x 1 Tensor within the `InfectionLayer`object, where n is the amount of agents in the simulation. During
+the Tick the agents read the index of their stage from an array copy of the tensor (the agents themselves don't use tensors) 
+and act according to their stage simulating the transmission of an epidemic. During the PostTick the tensor and its copy are updated by the layer simulating the progression
+of an epidemic.
+
 ## Process flow
 The process flow of the model consists of the following phases:
 
