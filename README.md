@@ -21,8 +21,21 @@ framework, hence the name 'model-epidemic-spread-combined'.
 
 
 - **Tensor**: A tensor is a multi-dimensional array. Tensors are implemented using the [TensorFlow.Net Tensor](https://tensorflownet.readthedocs.io/en/latest/Tensor.html) implementation. 
-In this model, tensors are used to store and process data including the stages of the agents.
+In this model, tensors are used to store and process data including the stages of the agents. They are important because of their features:
+  - They enable automatic differentiation, meaning they can automatically compute the gradient of a function with respect to its input
+  - They allow for parallelization of operations across multiple processing units, such as CPUs and GPUs, leading to faster processing of large-scale data
+  - They support a wide range of mathematical operations, enabling them to solve complex mathematical functions
 
+To get an understanding of how tensors are used in [TensorFlow.NET](https://github.com/SciSharp/TensorFlow.NET) here is an example 
+of a calculation, first with arrays and then with tensors: 
+
+```csharp
+
+```
+
+```csharp
+
+```
 ## Process flow
 The process flow of the model consists of the following phases:
 
