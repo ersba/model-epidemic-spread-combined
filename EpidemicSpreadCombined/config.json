@@ -3,7 +3,7 @@
 		"deltaT": 1,
 		"steps": 50,
 		"pythonVisualization": false,
-		"console": true,
+		"console": false,
 		"output": "csv"
 	},
 	"layers":[
