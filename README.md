@@ -101,4 +101,4 @@ To visualize the result of the simulation run the visualization.R file with RStu
 containing the stages of the agents and visualize the result in a graph.
 
 An example of the visualization is shown below:
-[example_visualization.png](https://github.com/ersba/images-model-epidemic-spread-combined/blob/main/example_visualization.png)
+[example_visualization.png](https://raw.githubusercontent.com/ersba/images-model-epidemic-spread-combined/main/example_visualization.png)
