@@ -18,10 +18,10 @@ namespace EpidemicSpreadCombined
         /// </summary>
         private static void Main()
         {
-            // var calibNn = new SimpleCalibNn();
-            // calibNn.Train(10);
+            var calibNn = new SimpleCalibNn();
+            calibNn.Train(Params.Epochs);
 
-            EpidemicSpreadSimulation();
+            // EpidemicSpreadSimulation();
         }
         
         /// <summary>
