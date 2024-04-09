@@ -52,12 +52,16 @@ arraySum and tensorSum contain the same values and are two-dimensional with a sh
 
 ![example_matrices.png](https://raw.githubusercontent.com/ersba/images-model-epidemic-spread-combined/main/example_matrices.png)
 
-
 This example shows how tensors can efficiently perform mathematical operations without the need for loops. The stage of every
 agent is stored in a n x 1 Tensor within the `InfectionLayer`object, where n is the amount of agents in the simulation. During
 the Tick the agents read the index of their stage from an array copy of the tensor (the agents themselves don't use tensors) 
 and act according to their stage simulating the transmission of an epidemic. During the PostTick the tensor and its copy are updated by the layer simulating the progression
 of an epidemic.
+
+- **Optimization**: The optimization of the neural network is based on the gradient descent algorithm. The neural network
+calculates the loss of the simulation by comparing the amount of deaths with the label data. The aim is to minimize this loss. 
+That is why it is important to have automatically differentiable tensors. The image below shows how the gradient descent algorithm works:
+![gradient_descent.png](https://raw.githubusercontent.com/ersba/images-model-epidemic-spread-combined/main/gradient_descent.png)
 
 ## Process flow
 The process flow of the model consists of the following phases:
