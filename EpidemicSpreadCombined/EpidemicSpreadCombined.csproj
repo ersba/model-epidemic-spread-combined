@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
         <Content Include="config.json">
@@ -13,7 +13,7 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Mars.Life.Simulations" Version="4.5.2" />
+        <PackageReference Include="Mars.Life.Simulations" Version="5.0.0" />
         <PackageReference Include="MathNet.Numerics" Version="6.0.0-beta1" />
         <PackageReference Include="NumSharp" Version="0.30.0" />
         <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.16.0" />

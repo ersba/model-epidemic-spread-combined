@@ -1,7 +1,7 @@
 # Model epidemic spread combined
 
 The `model-epidemic-spread-combined` model is a simulation of the spread of an epidemic using agent-based modeling 
-and a neural network. It's written in C# and uses the .NET 6.0 framework. The model is inspired by the implementation
+and a neural network. It's written in C# and uses the .NET 8.0 framework. The model is inspired by the implementation
 [Differentiable Agent-based Epidemiology](https://github.com/AdityaLab/GradABM) of the paper 
 "Differentiable Agent-based Epidemiology." It combines the capability for granular multi-agent modeling of the [MARS](https://www.mars-group.org/docs/tutorial/intro)
 framework with the optimization of neural networks using the [TensorFlow.NET](https://github.com/SciSharp/TensorFlow.NET)
@@ -81,9 +81,11 @@ With gradient based optimization the neural network adjusts its neurons.
 
 To run the model-epidemic-spread-combined model, follow these steps:
 
-1. Ensure you have .NET 6.0 SDK installed on your machine. You can download it from the [official Microsoft website](https://dotnet.microsoft.com/download/dotnet/6.0).
+1. Ensure you have .NET 8.0 SDK installed on your machine. You can download it from the [official Microsoft website](https://dotnet.microsoft.com/download/dotnet/6.0).
 2. Clone the repository to your local machine.
-3. Open the project in your preferred IDE and install the required NuGet packages. (If you run MacOS on your PC remove the package SciSharp.TensorFlow.Redist and install SciSharp.TensorFlow.Redist-OSX)
+3.
+   1. Open the project in your preferred IDE and install the required NuGet packages. 
+   2. If you run MacOS on your PC remove the package SciSharp.TensorFlow.Redist and install SciSharp.TensorFlow.Redist-OSX
 4. Run the `Main` method in the `Program.cs` file.
 
 Please note that the `Main` method in `Program.cs` is set to run the `EpidemicSpreadSimulation` by default. If you want 
