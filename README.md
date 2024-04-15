@@ -83,7 +83,7 @@ To run the model-epidemic-spread-combined model, follow these steps:
 
 1. Ensure you have .NET 6.0 SDK installed on your machine. You can download it from the [official Microsoft website](https://dotnet.microsoft.com/download/dotnet/6.0).
 2. Clone the repository to your local machine.
-3. Open the project in your preferred IDE and install the required NuGet packages.
+3. Open the project in your preferred IDE and install the required NuGet packages. (If you run MacOS on your PC remove the package SciSharp.TensorFlow.Redist and install SciSharp.TensorFlow.Redist-OSX)
 4. Run the `Main` method in the `Program.cs` file.
 
 Please note that the `Main` method in `Program.cs` is set to run the `EpidemicSpreadSimulation` by default. If you want 
