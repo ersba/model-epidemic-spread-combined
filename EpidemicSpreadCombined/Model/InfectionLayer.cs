@@ -122,9 +122,9 @@ namespace EpidemicSpreadCombined.Model
                 (tf.fill(tf.shape(newTransitionTimes),tf.constant((int)Context.CurrentTick) + 
                                                       Params.InfectedToRecoveredTime)), newTransitionTimes);
             
-            // Agents that got exposed in the current tick have their transition time set to ExposedToInfectedTime + 1
+            // Agents that got exposed in the current tick have their transition time set to ExposedToInfectedTime - 1
             // and the transition time of the rest is newTransitionTimes
-            var result = exposedToday * (tf.constant((int)Context.CurrentTick) + Params.ExposedToInfectedTime + 1)
+            var result = exposedToday * (tf.constant((int)Context.CurrentTick + 1) + Params.ExposedToInfectedTime - 1)
                 + (tf.fill(tf.shape(exposedToday), tf.constant(1)) - exposedToday) * newTransitionTimes;
             return result;
         }
@@ -206,7 +206,7 @@ namespace EpidemicSpreadCombined.Model
             _nextStageTimes = tf.where(exposedCondition, tf.fill(tf.shape(_nextStageTimes), 
                 Params.ExposedToInfectedTime + tf.constant(1)), _nextStageTimes);
             _nextStageTimes = tf.where(infectedCondition, tf.fill(tf.shape(_nextStageTimes), 
-                Params.InfectedToRecoveredTime + tf.constant(1)), _nextStageTimes);
+                Params.InfectedToRecoveredTime), _nextStageTimes);
         }
     }
 }

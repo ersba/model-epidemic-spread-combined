@@ -34,7 +34,7 @@ namespace EpidemicSpreadCombined.Model
         private float _susceptibility;
         
         private bool _exposedToday;
-
+        
         /// <summary>
         /// Initialization of the agent
         /// </summary>
@@ -111,7 +111,6 @@ namespace EpidemicSpreadCombined.Model
             {
                 MyStage = _infectionLayer.ArrayStages[Index];
             }
-            // if (MyStage == (int)Stage.Recovered) Console.WriteLine("I'm recovered!!!");
         }
         
         /// <summary>
