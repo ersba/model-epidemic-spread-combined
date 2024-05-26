@@ -3,7 +3,7 @@
 		"deltaT": 1,
 		"steps": 50,
 		"pythonVisualization": false,
-		"console": false,
+		"console": true,
 		"output": "csv"
 	},
 	"layers":[
@@ -14,7 +14,7 @@
 	"agents":[
 		{
 			"name": "Host",
-			"count": 3000,
+			"count": 30000,
 			"file": "Resources/hosts_data.csv"
 		}
 	]

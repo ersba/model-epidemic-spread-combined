@@ -25,9 +25,7 @@ namespace EpidemicSpreadCombined
         
         public static readonly float[] Infector = {0.0f, 0.33f, 0.72f, 0.0f, 0.0f};
         
-        public static readonly int Epochs = 50;
-
-        public static readonly float R0Value = 5.18f;
+        public static readonly int Epochs = 100;
         
         public static Tensor ExposedToInfectedTime = tf.constant(3, dtype: TF_DataType.TF_INT32);
             

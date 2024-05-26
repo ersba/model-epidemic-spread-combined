@@ -77,8 +77,12 @@ namespace EpidemicSpreadCombined
                     
                     // calculate the gradient of the loss function with respect to the trainable variables
                     var gradients = tape.gradient(loss, _model.TrainableVariables);
+                    
+                    // Apply gradient clipping
+                    var clippedGradients = gradients.Select(g => tf.clip_by_value(g, -1.0f, 1.0f)).ToArray();
+
                     // apply the gradients to the model's trainable variables
-                    optimizer.apply_gradients(zip(gradients, _model.TrainableVariables));
+                    optimizer.apply_gradients(zip(clippedGradients, _model.TrainableVariables));
                     
                     Console.WriteLine($"epoch: {epoch + 1}, loss: {loss.numpy()}");
                     Console.Write("gradients: ");
@@ -104,8 +108,8 @@ namespace EpidemicSpreadCombined
         /// <returns></returns>
         private (Tensor, NDArray) CustomLoss(Tensor target, Tensor predictions)
         {
-            var lowerBounds = tf.constant(new [] {0.001f, 0.01f});
-            var upperBounds = tf.constant(new [] {0.9f, 0.9f});
+            var lowerBounds = tf.constant(new [] {0.001f, 0.01f, 0.5f});
+            var upperBounds = tf.constant(new [] {0.9f, 0.9f, 6f});
             // predictions has the shape (1, number of predicted params) and is bounded 
             var boundedPred = lowerBounds + (upperBounds - lowerBounds) * predictions;
             // boundedPred = tf.reshape(boundedPred, new Shape(-1));
@@ -114,8 +118,9 @@ namespace EpidemicSpreadCombined
             Console.WriteLine("---------------------------------------------------");
             Console.Write("parameters:");
             tf.print(boundedPred);
-            learnableParams.InitialInfectionRate = boundedPred[0, 0];
-            learnableParams.MortalityRate = boundedPred[0, 1];
+            // learnableParams.InitialInfectionRate = boundedPred[0, 0];
+            // learnableParams.MortalityRate = boundedPred[0, 1];
+            learnableParams.R0Value = boundedPred[0, 2];
             var predictedDeaths = Program.EpidemicSpreadSimulation(true);
             
             Console.Write("deaths: ");
@@ -173,7 +178,7 @@ namespace EpidemicSpreadCombined
                 _model.add(keras.layers.Dense(32));
                 _model.add(keras.layers.LeakyReLU());
                 _model.add(keras.layers.Dense(32));
-                _model.add(keras.layers.Dense(2, activation: "sigmoid"));
+                _model.add(keras.layers.Dense(3, activation: "sigmoid"));
             }
             // _model.compile(optimizer: keras.optimizers.Adam(), loss: new CustomLoss());
         }

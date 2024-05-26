@@ -4,6 +4,7 @@ using Mars.Interfaces.Agents;
 using Mars.Interfaces.Annotations;
 using Mars.Interfaces.Layers;
 using MathNet.Numerics.Distributions;
+using NumSharp;
 
 namespace EpidemicSpreadCombined.Model 
 {
@@ -35,12 +36,15 @@ namespace EpidemicSpreadCombined.Model
         
         private bool _exposedToday;
         
+        private LearnableParams _learnableParams;
+        
         /// <summary>
         /// Initialization of the agent
         /// </summary>
         /// <param name="layer"></param>
         public void Init(InfectionLayer layer)
         {
+            _learnableParams = LearnableParams.Instance;
             _infectionLayer = layer;
             _infectionLayer.ContactEnvironment.Insert(this);
             _susceptibility = Params.Susceptibility[MyAgeGroup];
@@ -67,7 +71,11 @@ namespace EpidemicSpreadCombined.Model
         /// </summary>
         private void Interact()
         {
-            if(MyStage == (int) Stage.Susceptible){
+            if(MyStage == (int) Stage.Susceptible)
+            {
+                var rDerivatives = new List<float>();
+                var product = 1f;
+                var inverseDerivatives = new List<float>();
                 foreach (Host host in _infectionLayer.ContactEnvironment.GetNeighbors(Index))
                 {
                     if (host.MyStage is (int) Stage.Infected or (int) Stage.Exposed)
@@ -77,15 +85,21 @@ namespace EpidemicSpreadCombined.Model
                         var integral =
                             _integrals[
                                 Math.Abs(_infectionLayer.GetCurrentTick() - host._infectedTime)];
-                        var result = Params.R0Value * _susceptibility * infector * bN * integral / _meanInteractions;
-
+                        var rDerivative = _susceptibility * infector * bN * integral / _meanInteractions;
+                        rDerivatives.Add(rDerivative);
+                        var result = (float)_learnableParams.R0Value.numpy() * rDerivative;
+                        product *= result;
+                        inverseDerivatives.Add(1 / result);
                         Random random = new Random();
-                        if (!(random.NextDouble() < result)) continue;
-                        _infectionLayer.ArrayExposedToday[Index] = 1;
-                        _exposedToday = true;
-                        return;
+                        if (random.NextDouble() < result)
+                        {
+                            _infectionLayer.ArrayExposedToday[Index] = 1;
+                            _exposedToday = true;
+                        }
                     }
                 }
+                var derivatives = np.array(inverseDerivatives) * product * np.array(rDerivatives);
+                _infectionLayer.ArrayExposedTodayDerivatives[Index] = np.sum(derivatives);
             }
         }
 

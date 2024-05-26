@@ -21,6 +21,8 @@ namespace EpidemicSpreadCombined.Model
         
         public int[] ArrayExposedToday { get; set; }
         
+        public float[] ArrayExposedTodayDerivatives { get; set; }
+        
         public IAgentManager AgentManager { get; private set; }
 
         private LearnableParams _learnableParams;
@@ -47,6 +49,7 @@ namespace EpidemicSpreadCombined.Model
             InitStages();
             InitNextStageTimes();
             ArrayExposedToday = new int[Params.AgentCount];
+            ArrayExposedTodayDerivatives = new float[Params.AgentCount];
             Host.InitLamdaGammaIntegrals();
             AgentManager = layerInitData.Container.Resolve<IAgentManager>();
             AgentManager.Spawn<Host, InfectionLayer>().ToList();
@@ -79,13 +82,16 @@ namespace EpidemicSpreadCombined.Model
             
             Deaths += tf.reduce_sum(recoveredAndDead) * _learnableParams.MortalityRate;
             
-            var exposedToday = tf.expand_dims(tf.constant(ArrayExposedToday));
+            var exposedToday = tf.expand_dims(tf.stop_gradient(tf.constant(ArrayExposedToday) - (tf.constant(ArrayExposedTodayDerivatives * tf.constant(_learnableParams.R0Value.numpy())))) +
+                                                               tf.constant(ArrayExposedTodayDerivatives * _learnableParams.R0Value));
             
             var nextStages = UpdateStages(exposedToday);
             
-            _nextStageTimes = UpdateNextStageTimes(exposedToday);
+            _nextStageTimes = UpdateNextStageTimes(tf.constant(exposedToday.numpy(), TF_DataType.TF_INT32));
             
             ArrayExposedToday = new int[Params.AgentCount];
+            
+            ArrayExposedTodayDerivatives = new float[Params.AgentCount];
             
             Stages = nextStages;
             
