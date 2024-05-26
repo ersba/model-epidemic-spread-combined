@@ -65,6 +65,7 @@ namespace EpidemicSpreadCombined
             {
                 using (var tape = tf.GradientTape())
                 {
+                    // only one batch is used with the reshaped array of 10f with shape (-1, 1) which leads to the dimensions (1 ,1)
                     var predictions = (Tensor)_model.predict(np.array(10f).reshape(new Shape(-1, 1)));
                     (var loss, var boundedPredictions) = CustomLoss(_labels, predictions);
                     
@@ -73,8 +74,10 @@ namespace EpidemicSpreadCombined
                         bestEpochloss = loss.ToArray<float>()[0];
                         bestBoundedPredictions = boundedPredictions.ToArray<float>();
                     }
-
+                    
+                    // calculate the gradient of the loss function with respect to the trainable variables
                     var gradients = tape.gradient(loss, _model.TrainableVariables);
+                    // apply the gradients to the model's trainable variables
                     optimizer.apply_gradients(zip(gradients, _model.TrainableVariables));
                     
                     Console.WriteLine($"epoch: {epoch + 1}, loss: {loss.numpy()}");
@@ -103,8 +106,9 @@ namespace EpidemicSpreadCombined
         {
             var lowerBounds = tf.constant(new [] {0.001f, 0.01f});
             var upperBounds = tf.constant(new [] {0.9f, 0.9f});
+            // predictions has the shape (1, number of predicted params) and is bounded 
             var boundedPred = lowerBounds + (upperBounds - lowerBounds) * predictions;
-
+            // boundedPred = tf.reshape(boundedPred, new Shape(-1));
             LearnableParams learnableParams = LearnableParams.Instance;
             
             Console.WriteLine("---------------------------------------------------");

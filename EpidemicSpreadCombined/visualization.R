@@ -4,7 +4,7 @@ library(rstudioapi)
 
 current_path <- dirname(rstudioapi::getSourceEditorContext()$path)
 
-file_path <- file.path(current_path, "bin", "Debug", "net6.0", "Host.csv")
+file_path <- file.path(current_path, "bin", "Debug", "net8.0", "Host.csv")
 
 data <- read.csv(file_path)
 

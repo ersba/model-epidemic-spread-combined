@@ -25,7 +25,7 @@ namespace EpidemicSpreadCombined
         
         public static readonly float[] Infector = {0.0f, 0.33f, 0.72f, 0.0f, 0.0f};
         
-        public static readonly int Epochs = 10;
+        public static readonly int Epochs = 50;
 
         public static readonly float R0Value = 5.18f;
         

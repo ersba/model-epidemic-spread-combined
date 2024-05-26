@@ -14,7 +14,7 @@
 	"agents":[
 		{
 			"name": "Host",
-			"count": 1000,
+			"count": 3000,
 			"file": "Resources/hosts_data.csv"
 		}
 	]
